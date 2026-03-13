@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt=br">
+    <head>
+        <title>Aula04</title>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+        <script type="text/javascript">
+            let nota1 =  parseFloat(prompt('Informe a primeira nota:'))
+            let nota2 =  parseFloat(prompt('Informe a segunda nota:'))
+        if (isNaN(nota1) || isNaN(nota2)){
+            document.write('Informe apenas números!')
+        } else {   
+            let media = (nota1 + nota2) / 2
+            document.write(`A media é ${media}`)
+        }
+        document.write('<br>')
+
+        let cidade = prompt('Informe uma cidade:')
+        cidade = cidade.toUpperCase()
+        if (cidade == 'TAQUARITINGA') {
+            document.write(`${cidade} é conhecida pelo seu Carnaval.`)
+        } else if (cidade == 'IBITINGA') {
+            document.write(`${cidade} é conhecida pelo Bordado.`)
+        } else if (cidade == 'MATÃO' || cidade == 'MATÃO') {
+            document.write(`${cidade} é conhecida por suas industrias.`)
+        } else if (cidade == 'DOBRADA' || cidade == 'GUARIROBA') {
+            document.write(`${cidade} é conhecida por sua festa.`)
+        } else {
+            document.write(`${cidade} não identificada!`)
+        }
+
+        document.write('<br>')
+        switch(cidade){
+            case 'TAQUARITINGA':
+                document.write(`${cidade} é conhecida pelo seu Carnaval.`)
+                break
+            case'IBITINGA':
+                document.write(`${cidade} é conhecida pelo Bordado.`)
+                break
+            case 'MATÃO':
+            case 'MATÃO':
+                document.write(`${cidade} é conhecida por suas industrias`)
+                break
+            case 'DOBRADA':
+            case 'GUARIROBA':
+                document.write(`${cidade} é conhecida por sua festa.`)
+                break
+            default:
+                document.write(`${cidade} não identificada!`)
+        }
+
+            document.write('<br>')
+            document.write((cidade == 'TAQUARITINGA') ? 'Possui Fatec' : 'Outra instituição')
+        </script>
+    </body>
+</html>
