@@ -1,22 +1,49 @@
 <!DOCTYPE html>
-<html lang="pt-br">
-    <head>
-        <title>Aula03</title>
-        <meta charset="UTF-8">
-        <script type="text/JavaScript">
-            let numero1 = parseFloat(prompt('Informe o numero'))
-            let numero2 = parseFloat(prompt('Informe  outro numero'))
-        if (isNaN(numero1) || isNaN(numero2)){
+<html lang="pt=br">
+
+<head>
+    <title>Aula04</title>
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <script type="text/JavaScript">
+        let numero1 = parseFloat(prompt('Informe o numero'))
+        let numero2 = parseFloat(prompt('Informe um segundo numero'))
+        let resultado = ''
+
+        if (isNaN(numero1) && isNaN(numero2)){
             document.write('Informe apenas números!')
         } else {
-            let operacao = parseFloat(prompt('Informe a operação'))
-        } else if (operacao == '/') {
-            document.write(`${} é conhecida pelo Bordado.`)   
-        }
-        </script>
-    </head>
-    <body>
 
-    </body>
+            let operador = prompt('Informe a operação')
+            
+            if (operador == "+") {
+                resultado = numero1 + numero2
+
+            }else if (operador == "-"){
+                resultado = numero1 - numero2
+                
+            }else if (operador == "*"){
+                resultado = numero1 * numero2
+
+            }else if (operador == "/"){
+                if (numero2 == 0) {
+                    resultado = 'Segundo numero tem que ser maior que 0 na divisão'
+                }
+                else{
+                    resultado = numero1 / numero2
+                }
+            }
+            else{
+                document.write('Use esses Operadores: + - / *')
+            }
+        
+            document.write(`${resultado}`)
+        
+        }
+
+        </script>
+</body>
 
 </html>
