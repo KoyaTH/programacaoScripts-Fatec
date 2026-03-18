@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Aula 05 - Vetores e Estrutura de Repetição</title>
+</head>
+
+<body>
+    <input type="number" id="item" placeholder="Deseja remover que banda na lista?">
+    <button id="Remover">Remover</button>
+
+    <input type="text" id="item2" placeholder="Deseja Adicionar que banda na lista?">
+    <button id="Adicionar">Adicionar</button>
+
+    <h2>Lista: </h2>
+    <ul id="lista">
+
+    </ul>
+
+    <script type="text/JavaScript">
+        let inputRemover = document.getElementById('item')
+        let buttonRemover = document.getElementById('Remover')
+
+        let inputAdicionar = document.getElementById('item2')
+        let buttonAdicionar = document.getElementById('Adicionar')
+
+        const tamanho = document.createElement("h2");
+        const ulLista = document.getElementById('lista');
+        let lista = [] // Lista Vazia
+        
+        // Adicionando coisa na Lista
+        lista.push('Kiss','Red Hot Chilli Peppers','Guns n Roses', 'Bon Jovi', "Metallica", 'Iron Maiden', 'Scorpion', 'Linkin Park', 'ACDC')
+        lista[6] = 'Nirvana'
+        
+        // lista.pop() // remover o ultimo 
+
+
+        buttonRemover.addEventListener('click', function () {
+            let remove = inputRemover.value;
+            lista.splice(remove, 1) // Escolher quem remover e quantos remover
+            escrevendolista()
+        })
+
+        buttonAdicionar.addEventListener('click', function () {
+            let adicionar = inputAdicionar.value;
+            lista.push(adicionar)
+            escrevendolista()
+        })      
+
+        
+        
+        //document.write(4 + '<br> Tamanho da Lista: ' + lista.length + '<br><br>')
+        function escrevendolista() {
+            tamanho.textContent = document.write('<br> Tamanho da Lista: ' + lista.length + '<br><br>')
+            ulLista.innerHTML = "";
+            for (let i = 0; i < lista.length; i++) { // Escrevendo tudo oq ta lista
+                const li = document.createElement("li");
+                li.textContent = ('Nomes das bandas e suas posições ' + lista[i] + ' - Posição: ' + i)
+                ulLista.appendChild(li);
+                console.log(lista)
+            }
+
+        }
+        escrevendolista()
+    </script>
+</body>
+
+</html>

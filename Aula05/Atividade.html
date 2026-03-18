@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt=br">
+
+<head>
+    <title>Aula05</title>
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <script type="text/JavaScript">
+        var i = 1
+        do {
+        let numero1 = parseFloat(prompt('Informe o numero'))
+        let numero2 = parseFloat(prompt('Informe um segundo numero'))
+        let resultado = ''
+        var continuar = "SIM"
+        
+        if (isNaN(numero1) && isNaN(numero2)){
+            document.write('Informe apenas números!')
+        } else {
+
+            let operador = prompt('Informe a operação')
+            
+            if (operador == "+") {
+                resultado = numero1 + numero2
+
+            }else if (operador == "-"){
+                resultado = numero1 - numero2
+                
+            }else if (operador == "*"){
+                resultado = numero1 * numero2
+
+            }else if (operador == "/"){
+                if (numero2 == 0) {
+                    resultado = 'Segundo numero tem que ser maior que 0 na divisão'
+                }
+                else{
+                    resultado = numero1 / numero2
+                }
+            }
+            else{
+                document.write('Use esses Operadores: + - / *')
+            }
+            
+            document.write(`${resultado} | Resultado da Operação ${i} <br>`)
+            
+            alert(`Resultado: ${resultado}`)
+            
+            
+        }
+        continuar = confirm("Deseja Continuar?")
+        i += 1
+        } while (continuar == true);
+        
+
+        </script>
+</body>
+
+</html>
