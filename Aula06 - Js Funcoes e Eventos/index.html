@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Aula 06 - Funções</title>
+</head>
+<body>
+    
+    
+    <script type="text/JavaScript">
+        
+
+        let cotacaoDolar = 5.19
+
+        function converterRealParaDolar(valor, dolar) {
+            return "USS " + (valor / dolar).toFixed(2).replace(".", ",") + "<br>"
+        }
+
+        function converterRealDolar(valor, dolar) {
+            document.write("USS " + (valor / dolar).toFixed(2).replace(".", ",") + "<br>")
+        }
+
+        document.write(converterRealParaDolar(100, cotacaoDolar))
+        document.write(converterRealParaDolar(200, cotacaoDolar))
+        converterRealDolar(500, cotacaoDolar)
+        converterRealDolar(1000, cotacaoDolar)
+        converterRealDolar(parseFloat(prompt('Numero')), cotacaoDolar)
+    </script>
+</body>
+</html>
