@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Correção</title>
+</head>
+
+<body>
+    <header>
+        <h1>Atividade Avaliativa</h1>
+
+        <script type="text/JavaScript">
+            let respostas = ['Resposta Vetor', 'Resposta Função', 'Resposta Evento']
+            let historico = []
+
+            function montarCelula(lista) {
+                let html = ''
+                for (let i in lista) {
+                    html += '<tr><td>'+ lista[i]+'</td></tr>'
+                }
+                return html
+            }
+            window.onload = () => {
+                document.getElementById('btnResposta').onclick = () => {
+                    let pergunta = document.getElementById('pergunta').value
+                    historico.push(respostas[pergunta])
+                    document.getElementById('tabela').innerHTML = montarCelula(historico)
+                }
+                document.getElementById('btnLimpar').onclick = () => {
+                    if (confirm("Quer Limpar o Historico?") == true){
+                    historico = []
+                    document.getElementById('tabela').innerHTML = ''
+                    }
+                }
+            }
+        </script>
+    </header>
+    <main>
+        <p>Selecione uma Pergunta:</p>
+        <select id="pergunta">
+            <option value="0">Vetor</option>
+            <option value="1">Função</option>
+            <option value="2">Evento</option>
+        </select>
+        <button id="btnResposta">Ver Resporta</button>
+        <button id="btnLimpar">Limpar</button>
+        <table id="tabela">
+
+        </table>
+    </main>
+</body>
+
+</html>
