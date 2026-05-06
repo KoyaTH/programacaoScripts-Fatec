@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-br" data-bs-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../Bootstrap/css/bootstrap.min.css">
+    <script type="text/JavaScript" src="../../vue.js"></script>
+    <title>Aula 10 - Atividade</title>
+</head>
+
+<body>
+    <div id="app" class="container">
+        <h1>Conversão Real / Dolar</h1>
+        <form action="#" method="post" @submit.prevent="converter">
+            <label for="Dolar">Dolar: </label>
+            <input type="number" min="0" step="0.01" v-model="dolar" class="form-control mb-3" @keypress.enter.prevent="converter">
+            
+            <label for="Real">Real:</label>
+            <input type="number" min="0" step="0.01" v-model="real" class="form-control mb-3" @keypress.enter.prevent="converter">
+            
+            <select id="tipo" v-model="opcao" @change.prevent="mudandoOpcao">
+                <option value="1">Real Para Dolar</option>
+                <option value="2">Dolar Para Real</option>
+            </select>
+            <button class="btn btn-primary">Converter</button>
+
+            <p><b>Conversão: {{ resultado }} </b></p>
+        </form>
+
+    </div>
+    <script type="text/JavaScript">
+        let app = new Vue({
+            el: '#app',
+            data: {
+                real: '',
+                dolar: '5.19',
+                resultado: '',
+                opcao: '1'
+            },
+            methods: {
+                converter: function(){
+                    if (this.opcao == 1){
+                        this.resultado = 'USS ' + (this.real / this.dolar).toFixed(2).replace(".", ",")
+                    }else{
+                        this.resultado = 'R$ ' + (this.real / this.dolar).toFixed(2).replace(".", ",")
+                    }
+                },
+                mudandoOpcao: function() {
+                    if (this.opcao == 1){
+                        this.dolar = 5.19
+                        this.real = ''
+                    }else{
+                        this.real = 5.19
+                        this.dolar = ''
+                    }
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

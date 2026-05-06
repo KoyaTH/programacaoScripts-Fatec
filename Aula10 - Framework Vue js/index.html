@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-br" data-bs-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Bootstrap/css/bootstrap.min.css">
+    <script type="text/JavaScript" src="../vue.js"></script>
+    <title>Aula 10 - Vue.js</title>
+</head>
+
+<body>
+    <div id="app" class="container">
+        <h1>Lista de Compras</h1>
+        <form action="#" method="post" @submit.prevent="adicionar">
+            <label for="item">Informe um produto: </label>
+            <input class="form-control mb-3" type="text" v-model="produto" @keypress.enter.prevent="adicionar" v-bind:title="mensagem">
+            <div v-if="produto == ''">
+                <b>Nenhum Produto Informado!</b>
+            </div>
+            <div v-else>
+                <b>Pressione ENTER para adicionar!</b>
+            </div>
+            <button class="btn btn-primary">Adicionar</button>
+        </form>
+
+        <ul>
+            <li v-for="item in listaProdutos">
+                <b>{{ item }}</b> <button class="btn btn-danger" @click="remover(item)">Excluir</button>
+            </li>
+        </ul>
+    </div>
+    <script type="text/JavaScript">
+        let app = new Vue({
+            el: '#app',
+            data: {
+                produto: '',
+                mensagem: 'Digite um Produto para adiciona a Lista de Produtos',
+                listaProdutos: []
+            },
+            methods: {
+                adicionar: function(){
+                    if (this.produto != '') {
+                        this.listaProdutos.push(this.produto)
+                        this.produto = ''
+                    }
+                },
+                remover: function(item) {
+                    const index = this.listaProdutos.indexOf(item)
+                    if (index !== -1) {
+                        this.listaProdutos.splice(index, 1)
+                    }
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
