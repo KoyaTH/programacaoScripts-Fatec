@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-br" data-bs-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Bootstrap/css/bootstrap.min.css">
+    <script type="text/JavaScript" src="../vue.js"></script>
+    <title>Projeto</title>
+</head>
+
+<body>
+    <div id="app" class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h1>Cadastro de Bloco</h1>
+                <form action="#" method="post" @submit.prevent="cadastrarItem" @keypress.enter.prevent="cadastrarItem">
+                    <div class="mb-3">
+                        <label for="namespaceId" class="form-label">ID Técnico (Namespace ID)</label>
+                        <input type="text" class="form-control" id="namespaceId" v-model="item.namespaceId"
+                            placeholder="ex: minecraft:diamond_pickaxe" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="nome" class="form-label">Nome do Item/Bloco</label>
+                        <input type="text" class="form-control" id="nome" v-model="item.nome"
+                            placeholder="ex: Picareta de Diamante" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="textura" class="form-label">URL da Textura (.png)</label>
+                        <input type="url" class="form-control" id="textura" v-model="item.textura"
+                            placeholder="link-da-imagem.com">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="categoria" class="form-label">Categoria</label>
+                        <select class="form-select" id="categoria" v-model="item.categoria" required>
+                            <option value="" disabled selected>Selecione uma categoria</option>
+                            <option value="blocos_construcao">Blocos de Construção</option>
+                            <option value="blocos_naturais">Blocos Naturais</option>
+                            <option value="funcionais">Blocos Funcionais</option>
+                            <option value="redstone">Redstone</option>
+                            <option value="ferramentas">Ferramentas e Utilitários</option>
+                            <option value="combate">Combate</option>
+                            <option value="alimentos">Alimentos e Bebidas</option>
+                            <option value="ingredientes">Ingredientes</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="stack" class="form-label">Limite de Empilhamento (Stack)</label>
+                        <select class="form-select" id="stack" v-model.number="item.stack" required>
+                            <option value="64">64 (Padrão)</option>
+                            <option value="16">16 (Pérolas, Ovos, etc.)</option>
+                            <option value="1">1 (Ferramentas, Armaduras, Poções)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="renovavel" v-model="item.renovavel">
+                        <label class="form-check-label" for="renovavel">
+                            Este item é Renovável? (Pode ser farmado infinitamente)
+                        </label>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="descricao" class="form-label">Descrição / Notas do Item</label>
+                        <textarea class="form-control" id="descricao" v-model="item.descricao" rows="3"
+                            placeholder="Insira efeitos, usos ou curiosidades sobre o item..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Cadastrar Item</button>
+                </form>
+
+            </div>
+            <div class="col-md-6">
+                <h1>Lista de Blocos</h1>
+                <table>
+                    <thead>
+                        <tr class="table-dark table-striped-columns">
+                            <th>ID</th>
+                            <th>Nome do Bloco</th>
+                            <th>Categoria</th>
+                            <th>Descrição do Bloco</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="bloco in Bloco">
+                            <td>{{ bloco.id }}</td>
+                            <td>{{ bloco.nome }}</td>
+                            <td>{{ bloco.categoria }}</td>
+                            <td>{{ bloco.descricao }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <script type="text/JavaScript">
+        class Bloco {
+            constructor(id, textura, nome, categoria, descricao) {
+                this.id = id;
+                this.textura = textura;
+                this.nome = nome;
+                this.categoria = categoria;
+                this.descricao = descricao;
+            }
+        }
+        let app = new Vue({
+            el: '#app',
+            data: {
+                id: '',
+                nome: '',
+                categoria: '',
+                descricao: ''
+            },
+            methods: {
+                cadastrarBloco: function() {
+                    if (this.id != "" && this.nome != "" && this.categoria != "" && this.descricao != "") {
+                        let bloco = new Bloco(this.id, this.nome, this.categoria, this.descricao);
+
+                        console.log(bloco)
+                        criarColuna()
+                    }else {
+                        alert('Preencha todos os dados')
+                    }
+                },
+
+                criarColuna(){
+                    let html = ''
+                    for (let i in lista) {
+                        html += '<tr><td>'+ lista[i]+'</td></tr>'
+                    }       
+                    return html
+                }
+            },
+            
+        })
+    </script>
+</body>
+
+</html>

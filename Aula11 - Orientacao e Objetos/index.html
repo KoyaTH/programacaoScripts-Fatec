@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-br" data-bs-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Bootstrap/css/bootstrap.min.css">
+    <script type="text/JavaScript" src="../vue.js"></script>
+    <title>Aula 11 - OO</title>
+</head>
+
+<body>
+    <script type="text/JavaScript">
+        class Cliente {
+            constructor(cpf, nome, endereco, telefone) {
+                this.cpf = cpf;
+                this.nome = nome;
+                this.endereco = endereco;
+                this.telefone = telefone;
+            }
+
+            exibirDados(){
+                return this.endereco +" "+ this.telefone
+            }
+        }
+
+        let joao = new Cliente("123.456.789-00", "João Silva", "Rua A, 123", "(16) 98765-4321");
+        let maria = new Cliente("987.654.321-00", "Maria Souza", "Avenida B, 456", "(16) 91234-5678");
+        let ana = new Cliente("456.789.123-00", "Ana Pereira", "Praça C, 789", "(16) 99876-5432");
+
+        let produto = {codigo: 1, nome: 'Chocolate', valor: 5.00}
+        let produto2 = {codigo: 2, nome: 'Biscoito', valor: 3.00}
+    </script>
+</body>
+
+</html>

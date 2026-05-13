@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-br" data-bs-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Bootstrap/css/bootstrap.min.css">
+    <script type="text/JavaScript" src="../vue.js"></script>
+    <title>Projeto</title>
+</head>
+
+<body>
+    <div id="app" class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h1>Cadastro de Livro</h1>
+                <form action="#" method="post" @submit.prevent="cadastrarLivro"
+                    @keypress.enter.prevent="cadastrarLivro">
+                    <div class="mb-3">
+                        <label for="codigo" class="form-label">Código</label>
+                        <input type="number" class="form-control" id="codigo" v-model="codigo">
+                    </div>
+                    <div class="mb-3">
+                        <label for="titulo" class="form-label">Título</label>
+                        <input type="text" class="form-control" id="titulo" v-model="titulo">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editora" class="form-label">Editora</label>
+                        <input type="text" class="form-control" id="editora" v-model="editora">
+                    </div>
+                    <div class="mb-3">
+                        <label for="ano" class="form-label">Ano de Publicação</label>
+                        <input type="number" class="form-control" id="ano" v-model="ano">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Cadastrar</button>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <h1>Lista de Livros</h1>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Título</th>
+                            <th>Editora</th>
+                            <th>Ano de Publicação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="item in listaProdutos">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <script type="text/JavaScript">
+        class Livro {
+            constructor(codigo, titulo, editora, ano) {
+                this.codigo = codigo;
+                this.titulo = titulo;
+                this.editora = editora;
+                this.ano = ano;
+            }
+        }
+        let app = new Vue({
+            el: '#app',
+            data: {
+                codigo: '',
+                titulo: '',
+                editora: '',
+                ano: '',
+            },
+            methods: {
+                cadastrarLivro: function() {
+                    if (this.codigo != "" && this.titulo != "" && this.editora != "" && this.ano != "") {
+                        let livro = new Livro(this.codigo, this.titulo, this.editora, this.ano);
+            
+                        console.log(livro)
+                        criarColuna()
+                    }else {
+                        alert('Preencha todos os dados')
+                    }
+                },
+
+                criarColuna(){
+                    let html = ''
+                    for (let i in lista) {
+                        html += '<tr><td>'+ lista[i]+'</td></tr>'
+                    }       
+                    return html
+                }
+            },
+            
+        })
+    </script>
+</body>
+
+</html>
