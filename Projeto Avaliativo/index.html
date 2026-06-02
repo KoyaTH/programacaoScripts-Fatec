@@ -47,8 +47,8 @@
                     <div class="border rounded p-2 mb-2 overflow-auto" style="max-height: 220px;">
                         <div class="row row-cols-3 g-2">
                             <div class="col" v-for="funcao in funcoesCombate">
-                                <input type="checkbox" class="btn-check" :id="'funcao-' + funcao.id" :value="funcao.id"
-                                    v-model="funcoes" autocomplete="off">
+                                <input type="checkbox" class="btn-check d-none" :id="'funcao-' + funcao.id" :value="funcao.id"
+                                    v-model="funcoes" autocomplete="off" @change="$event.target.blur()">
                                 <label
                                     class="btn btn-sm btn-outline-info d-inline-flex align-items-center text-start w-100"
                                     :for="'funcao-' + funcao.id">
