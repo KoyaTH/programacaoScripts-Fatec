@@ -3,138 +3,232 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../Bootstrap/css/bootstrap.min.css">
-    <script type="text/JavaScript" src="../vue.js"></script>
-    <title>Projeto</title>
+    <title>Projeto - Cadastro de Personagem Wuthering Waves</title>
+    <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
+    <script type="text/javascript" src="../vue.js"></script>
 </head>
 
 <body>
     <div id="app" class="container">
         <div class="row">
             <div class="col-md-6">
-                <h1>Cadastro de Bloco</h1>
-                <form action="#" method="post" @submit.prevent="cadastrarItem" @keypress.enter.prevent="cadastrarItem">
-                    <div class="mb-3">
-                        <label for="namespaceId" class="form-label">ID Técnico (Namespace ID)</label>
-                        <input type="text" class="form-control" id="namespaceId" v-model="item.namespaceId"
-                            placeholder="ex: minecraft:diamond_pickaxe" required>
+                <h1>Cadastro de Personagem</h1>
+                <form action="#" method="post" @submit.prevent="salvar()">
+                    <label for="codigo">Código:</label>
+                    <input type="number" class="form-control mb-2" v-model="codigo">
+
+                    <label for="nome">Nome do Personagem:</label>
+                    <input type="text" class="form-control mb-2" v-model="nome">
+
+                    <label for="icone">Icone do Personagem (URL):</label>
+                    <input type="text" class="form-control mb-2" v-model="icone">
+
+                    <label for="elemento">Elemento:</label>
+                    <select name="elemento" id="elemento" class="form-control mb-2" v-model="elemento">
+                        <option disabled value="">Selecione um Elemento</option>
+                        <option value="Spectro">Spectro</option>
+                        <option value="Havoc">Havoc</option>
+                        <option value="Aero">Aero</option>
+                        <option value="Electro">Electro</option>
+                        <option value="Fusion">Fusion</option>
+                        <option value="Glacio">Glacio</option>
+                    </select>
+                    <label for="raridade">Raridade:</label>
+                    <div class="mb-2">
+                        <input type="radio" class="btn-check" id="star4" name="raridade" value="⭐⭐⭐⭐" v-model="raridade">
+                        <label class="btn btn-outline-primary" for="star4">⭐⭐⭐⭐</label>
+
+                        <input type="radio" class="btn-check" id="star5" name="raridade" value="⭐⭐⭐⭐⭐" v-model="raridade">
+                        <label class="btn btn-outline-primary" for="star5">⭐⭐⭐⭐⭐</label>
+                    </div>
+                    <label>Funções:</label>
+                    <div class="border rounded p-2 mb-2 overflow-auto" style="max-height: 220px;">
+                        <div class="row row-cols-3 g-2">
+                            <div class="col" v-for="funcao in funcoesCombate">
+                                <input type="checkbox" class="btn-check" :id="'funcao-' + funcao.id" :value="funcao.id"
+                                    v-model="funcoes" autocomplete="off">
+                                <label
+                                    class="btn btn-sm btn-outline-info d-inline-flex align-items-center text-start w-100"
+                                    :for="'funcao-' + funcao.id">
+                                    <img :src="funcao.icone" :alt="funcao.nome" width="20" height="20"
+                                        class="me-2 flex-shrink-0">
+                                    {{ funcao.nome }}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <span class="badge text-bg-info">{{ funcoes.length }} função(ões) selecionada(s)</span>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="nome" class="form-label">Nome do Item/Bloco</label>
-                        <input type="text" class="form-control" id="nome" v-model="item.nome"
-                            placeholder="ex: Picareta de Diamante" required>
+                    <div v-if="verificar()">
+                        <button class="btn btn-primary">Salvar</button>
                     </div>
-
-                    <div class="mb-3">
-                        <label for="textura" class="form-label">URL da Textura (.png)</label>
-                        <input type="url" class="form-control" id="textura" v-model="item.textura"
-                            placeholder="link-da-imagem.com">
+                    <div v-else="verificar()">
+                        <button class="btn btn-primary" disabled>Salvar</button>
                     </div>
-
-                    <div class="mb-3">
-                        <label for="categoria" class="form-label">Categoria</label>
-                        <select class="form-select" id="categoria" v-model="item.categoria" required>
-                            <option value="" disabled selected>Selecione uma categoria</option>
-                            <option value="blocos_construcao">Blocos de Construção</option>
-                            <option value="blocos_naturais">Blocos Naturais</option>
-                            <option value="funcionais">Blocos Funcionais</option>
-                            <option value="redstone">Redstone</option>
-                            <option value="ferramentas">Ferramentas e Utilitários</option>
-                            <option value="combate">Combate</option>
-                            <option value="alimentos">Alimentos e Bebidas</option>
-                            <option value="ingredientes">Ingredientes</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="stack" class="form-label">Limite de Empilhamento (Stack)</label>
-                        <select class="form-select" id="stack" v-model.number="item.stack" required>
-                            <option value="64">64 (Padrão)</option>
-                            <option value="16">16 (Pérolas, Ovos, etc.)</option>
-                            <option value="1">1 (Ferramentas, Armaduras, Poções)</option>
-                        </select>
-                    </div>
-
-                    <div class="form-check mb-3">
-                        <input class="form-check-input" type="checkbox" id="renovavel" v-model="item.renovavel">
-                        <label class="form-check-label" for="renovavel">
-                            Este item é Renovável? (Pode ser farmado infinitamente)
-                        </label>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="descricao" class="form-label">Descrição / Notas do Item</label>
-                        <textarea class="form-control" id="descricao" v-model="item.descricao" rows="3"
-                            placeholder="Insira efeitos, usos ou curiosidades sobre o item..."></textarea>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary w-100">Cadastrar Item</button>
                 </form>
-
             </div>
+
             <div class="col-md-6">
-                <h1>Lista de Blocos</h1>
-                <table>
+                <h1>Lista de Personagens</h1>
+                <table class="table table-striped">
                     <thead>
-                        <tr class="table-dark table-striped-columns">
-                            <th>ID</th>
-                            <th>Nome do Bloco</th>
-                            <th>Categoria</th>
-                            <th>Descrição do Bloco</th>
+                        <tr>
+                            <th>Código</th>
+                            <th>Nome do Personagem</th>
+                            <th>Elemento</th>
+                            <th>Raridade</th>
+                            <th>Funções</th>
+                            <th>Alterar</th>
+                            <th>Excluir</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="bloco in Bloco">
-                            <td>{{ bloco.id }}</td>
-                            <td>{{ bloco.nome }}</td>
-                            <td>{{ bloco.categoria }}</td>
-                            <td>{{ bloco.descricao }}</td>
+                        <tr v-for="(personagem, posicao) in listaPersonagens">
+                            <td>{{ personagem.codigo }}</td>
+                            <td>{{ personagem.nome }}</td>
+                            <td>{{ personagem.elemento }}</td>
+                            <td>{{ personagem.raridade }}</td>
+                            <td>
+                                <div class="row row-cols-3 g-1">
+                                    <div class="col" v-for="funcao in obterFuncoes(personagem.funcoes)">
+                                        <img :src="funcao.icone" :alt="funcao.nome" :title="funcao.nome" width="24"
+                                            height="24">
+                                    </div>
+                                </div>
+                            </td>
+                            <td><a href="#" class="btn btn-warning" @click="alterar(posicao)">Alterar</a></td>
+                            <td><a href="#" class="btn btn-danger" @click="excluir(posicao)">Excluir</a></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
-        <script type="text/JavaScript">
-        class Bloco {
-            constructor(id, textura, nome, categoria, descricao) {
-                this.id = id;
-                this.textura = textura;
-                this.nome = nome;
-                this.categoria = categoria;
-                this.descricao = descricao;
+    </div>
+    <script type="text/javascript">
+        class Personagem {
+            constructor(codigo, nome, elemento, raridade, funcoes) {
+                this.codigo = codigo
+                this.nome = nome
+                this.elemento = elemento
+                this.raridade = raridade
+                this.funcoes = funcoes
             }
         }
+
         let app = new Vue({
             el: '#app',
             data: {
-                id: '',
+                codigo: '',
                 nome: '',
-                categoria: '',
-                descricao: ''
+                elemento: '',
+                raridade: '',
+                funcoes: [],
+                posicao: -1,
+                funcoesCombate: [
+                    { id: 'aero-dmg-amplification', nome: 'Aero DMG Amplification', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Aero_DMG_Amplification.png' },
+                    { id: 'aero-erosion', nome: 'Aero Erosion', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Aero_Erosion_(Role).png' },
+                    { id: 'basic-attack-damage', nome: 'Basic Attack Damage', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Basic_Attack_Damage.png' },
+                    { id: 'basic-attack-dmg-amplification', nome: 'Basic Attack DMG Amplification', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Basic_Attack_DMG_Amplification.png' },
+                    { id: 'concerto-efficiency', nome: 'Concerto Efficiency', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Concerto_Efficiency.png' },
+                    { id: 'coordinated-attack', nome: 'Coordinated Attack', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Coordinated_Attack.png' },
+                    { id: 'coordinated-attack-dmg-amplification', nome: 'Coordinated Attack DMG Amplification', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Coordinated_Attack_DMG_Amplification.png' },
+                    { id: 'dmg-amplification', nome: 'DMG Amplification', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_DMG_Amplification.png' },
+                    { id: 'echo-skill-damage', nome: 'Echo Skill Damage', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Echo_Skill_Damage.png' },
+                    { id: 'echo-skill-dmg-amplification', nome: 'Echo Skill DMG Amplification', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Echo_Skill_DMG_Amplification.png' },
+                    { id: 'electro-dmg-amplification', nome: 'Electro DMG Amplification', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Electro_DMG_Amplification.png' },
+                    { id: 'electro-flare', nome: 'Electro Flare', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Electro_Flare_(Role).png' },
+                    { id: 'fusion-burst', nome: 'Fusion Burst', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Fusion_Burst_(Role).png' },
+                    { id: 'fusion-dmg-amplification', nome: 'Fusion DMG Amplification', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Fusion_DMG_Amplification.png' },
+                    { id: 'glacio-chafe', nome: 'Glacio Chafe', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Glacio_Chafe_(Role).png' },
+                    { id: 'glacio-dmg-amplification', nome: 'Glacio DMG Amplification', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Glacio_DMG_Amplification.png' },
+                    { id: 'havoc-bane', nome: 'Havoc Bane', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Havoc_Bane_(Role).png' },
+                    { id: 'havoc-dmg-amplification', nome: 'Havoc DMG Amplification', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Havoc_DMG_Amplification.png' },
+                    { id: 'heavy-attack-damage', nome: 'Heavy Attack Damage', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Heavy_Attack_Damage.png' },
+                    { id: 'heavy-attack-dmg-amplification', nome: 'Heavy Attack DMG Amplification', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Heavy_Attack_DMG_Amplification.png' },
+                    { id: 'interruption-resistance-boost', nome: 'Interruption Resistance Boost', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Interruption_Resistance_Boost.png' },
+                    { id: 'main-damage-dealer', nome: 'Main Damage Dealer', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Main_Damage_Dealer.png' },
+                    { id: 'off-tune-buildup-efficiency', nome: 'Off-Tune Buildup Efficiency', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Off-Tune_Buildup_Efficiency.png' },
+                    { id: 'resonance-liberation-damage', nome: 'Resonance Liberation Damage', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Resonance_Liberation_Damage.png' },
+                    { id: 'resonance-liberation-dmg-amplification', nome: 'Resonance Liberation DMG Amplification', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Resonance_Liberation_DMG_Amplification.png' },
+                    { id: 'resonance-liberation-regeneration', nome: 'Resonance Liberation Regeneration', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Resonance_Liberation_Regeneration.png' },
+                    { id: 'resonance-skill-damage', nome: 'Resonance Skill Damage', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Resonance_Skill_Damage.png' },
+                    { id: 'resonance-skill-dmg-amplification', nome: 'Resonance Skill DMG Amplification', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Resonance_Skill_DMG_Amplification.png' },
+                    { id: 'spectro-dmg-amplification', nome: 'Spectro DMG Amplification', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Spectro_DMG_Amplification.png' },
+                    { id: 'spectro-frazzle', nome: 'Spectro Frazzle', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Spectro_Frazzle_(Role).png' },
+                    { id: 'stagnation', nome: 'Stagnation', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Stagnation.png' },
+                    { id: 'support-and-healer', nome: 'Support and Healer', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Support_and_Healer.png' },
+                    { id: 'traction', nome: 'Traction', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Traction.png' },
+                    { id: 'tune-break-boost', nome: 'Tune Break Boost', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Tune_Break_Boost.png' },
+                    { id: 'tune-rupture-response', nome: 'Tune Rupture Response', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Tune_Rupture_Response.png' },
+                    { id: 'tune-strain-response', nome: 'Tune Strain Response', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Tune_Strain_Response.png' },
+                    { id: 'vibration-strength-reduction', nome: 'Vibration Strength Reduction', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Vibration_Strength_Reduction.png' }
+                ],
+                listaPersonagens: []
             },
             methods: {
-                cadastrarBloco: function() {
-                    if (this.id != "" && this.nome != "" && this.categoria != "" && this.descricao != "") {
-                        let bloco = new Bloco(this.id, this.nome, this.categoria, this.descricao);
-
-                        console.log(bloco)
-                        criarColuna()
-                    }else {
-                        alert('Preencha todos os dados')
+                salvar: function () {
+                    let personagem = new Personagem(this.codigo, this.nome, this.elemento, this.raridade, this.funcoes.slice())
+                    if (this.posicao == -1) {
+                        this.listaPersonagens.push(personagem)
+                    } else {
+                        Vue.set(this.listaPersonagens, this.posicao, personagem)
+                    }
+                    this.armazenar()
+                    this.limpar()
+                },
+                verificar: function () {
+                    return this.codigo != '' && this.nome != '' && this.elemento != '' && this.raridade != '' && this.funcoes.length > 0
+                },
+                obterFuncoes: function (funcoes) {
+                    if (!funcoes) {
+                        return []
+                    }
+                    return this.funcoesCombate.filter(function (funcao) {
+                        return funcoes.includes(funcao.id) || funcoes.includes(funcao.nome)
+                    })
+                },
+                limpar: function () {
+                    this.posicao = -1
+                    this.codigo = ''
+                    this.nome = ''
+                    this.elemento = ''
+                    this.raridade = ''
+                    this.funcoes = []
+                },
+                alterar: function (posicao) {
+                    this.posicao = posicao
+                    this.codigo = this.listaPersonagens[posicao].codigo
+                    this.nome = this.listaPersonagens[posicao].nome
+                    this.elemento = this.listaPersonagens[posicao].elemento
+                    this.raridade = this.listaPersonagens[posicao].raridade
+                    this.funcoes = this.listaPersonagens[posicao].funcoes ? this.listaPersonagens[posicao].funcoes.slice() : []
+                },
+                excluir: function (posicao) {
+                    if (confirm('Tem certeza que deseja excluir?')) {
+                        this.listaPersonagens.splice(posicao, 1)
+                        this.armazenar()
                     }
                 },
-
-                criarColuna(){
-                    let html = ''
-                    for (let i in lista) {
-                        html += '<tr><td>'+ lista[i]+'</td></tr>'
-                    }       
-                    return html
+                armazenar: function () {
+                    localStorage.setItem('listaPersonagens', JSON.stringify(this.listaPersonagens))
+                },
+                carregar: function () {
+                    let dados = localStorage.getItem('listaPersonagens')
+                    if (dados != null) {
+                        this.listaPersonagens = JSON.parse(dados).map(function (personagem) {
+                            personagem.funcoes = personagem.funcoes || []
+                            return personagem
+                        })
+                    }
                 }
             },
-            
+            created() {
+                this.carregar()
+            }
         })
     </script>
 </body>
