@@ -70,6 +70,7 @@
             }
         }
 
+        let endpoint = 'https://openlibrary.org/search.json?q=vue.js'
         let app = new Vue({
             el: '#app',
             data: {
@@ -122,10 +123,20 @@
                     if(dados != null){
                         this.listaLivros = JSON.parse(dados)
                     }
+                },
+                carregarApi: async function() {
+                    let dados = await fetch(endpoint, {
+                        method: 'GET'
+                    }).then(res => res.json()).catch(erro => alert(erro))
+                    dados.docs.forEach(item => {
+                        let novoLivro = new Livro(item.cover_i, item.title, 'OpenLibrary', item.first_publish_year)
+                        this.listaLivros.push(novoLivro)
+                    });
                 }
             },
             created(){
                 this.carregar()
+                this.carregarApi()
             }
         })
     </script>
