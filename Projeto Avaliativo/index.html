@@ -8,12 +8,14 @@
     <title>Projeto - Cadastro de Personagem Wuthering Waves</title>
     <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
     <script type="text/javascript" src="../vue.js"></script>
+    <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
-    <div id="app" class="container">
-        <div class="row">
-            <div class="col-md-6">
+    <div id="app" class="container py-4">
+        <div class="row g-4">
+            <div class="col-md-5">
+                <div class="black-shores-panel p-3">
                 <h1>Cadastro de Personagem</h1>
                 <form action="#" method="post" @submit.prevent="salvar()">
                     <label for="codigo">Código:</label>
@@ -44,7 +46,7 @@
                         <label class="btn btn-outline-primary" for="star5">⭐⭐⭐⭐⭐</label>
                     </div>
                     <label>Funções:</label>
-                    <div class="border rounded p-2 mb-2 overflow-auto" style="max-height: 220px;">
+                    <div class="border rounded p-2 mb-2 overflow-auto roles-box" style="max-height: 220px;">
                         <div class="row row-cols-3 g-2">
                             <div class="col" v-for="funcao in funcoesCombate">
                                 <input type="checkbox" class="btn-check d-none" :id="'funcao-' + funcao.id" :value="funcao.id"
@@ -70,14 +72,23 @@
                         <button class="btn btn-primary" disabled>Salvar</button>
                     </div>
                 </form>
+                </div>
             </div>
 
-            <div class="col-md-6">
-                <h1>Lista de Personagens</h1>
+            <div class="col-md-7">
+                <div class="black-shores-panel p-3">
+                
+                    <h1>Lista de Personagens</h1>
+                
+                <button class="btn btn-success mb-2" @click="carregarApi()" :disabled="carregandoApi">
+                    {{ carregandoApi ? 'Carregando...' : 'Carregar personagens da API' }}
+                </button>
+
                 <table class="table table-striped">
                     <thead>
                         <tr>
                             <th>Código</th>
+                            <th>Icone</th>
                             <th>Nome do Personagem</th>
                             <th>Elemento</th>
                             <th>Raridade</th>
@@ -89,6 +100,10 @@
                     <tbody>
                         <tr v-for="(personagem, posicao) in listaPersonagens">
                             <td>{{ personagem.codigo }}</td>
+                            <td>
+                                <img v-if="personagem.icone" class="character-icon" :src="personagem.icone"
+                                    :alt="personagem.nome" :title="personagem.nome" width="48" height="48">
+                            </td>
                             <td>{{ personagem.nome }}</td>
                             <td>{{ personagem.elemento }}</td>
                             <td>{{ personagem.raridade }}</td>
@@ -105,29 +120,33 @@
                         </tr>
                     </tbody>
                 </table>
+                </div>
             </div>
         </div>
     </div>
     <script type="text/javascript">
         class Personagem {
-            constructor(codigo, nome, elemento, raridade, funcoes) {
+            constructor(codigo, nome, icone, elemento, raridade, funcoes) {
                 this.codigo = codigo
                 this.nome = nome
+                this.icone = icone
                 this.elemento = elemento
                 this.raridade = raridade
                 this.funcoes = funcoes
             }
         }
-
+        let endpoint = 'https://api.encore.moe/en/character'
         let app = new Vue({
             el: '#app',
             data: {
                 codigo: '',
                 nome: '',
+                icone: '',
                 elemento: '',
                 raridade: '',
                 funcoes: [],
                 posicao: -1,
+                carregandoApi: false,
                 funcoesCombate: [
                     { id: 'aero-dmg-amplification', nome: 'Aero DMG Amplification', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Aero_DMG_Amplification.png' },
                     { id: 'aero-erosion', nome: 'Aero Erosion', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Aero_Erosion_(Role).png' },
@@ -171,7 +190,7 @@
             },
             methods: {
                 salvar: function () {
-                    let personagem = new Personagem(this.codigo, this.nome, this.elemento, this.raridade, this.funcoes.slice())
+                    let personagem = new Personagem(this.codigo, this.nome, this.icone, this.elemento, this.raridade, this.funcoes.slice())
                     if (this.posicao == -1) {
                         this.listaPersonagens.push(personagem)
                     } else {
@@ -195,6 +214,7 @@
                     this.posicao = -1
                     this.codigo = ''
                     this.nome = ''
+                    this.icone = ''
                     this.elemento = ''
                     this.raridade = ''
                     this.funcoes = []
@@ -203,6 +223,7 @@
                     this.posicao = posicao
                     this.codigo = this.listaPersonagens[posicao].codigo
                     this.nome = this.listaPersonagens[posicao].nome
+                    this.icone = this.listaPersonagens[posicao].icone || ''
                     this.elemento = this.listaPersonagens[posicao].elemento
                     this.raridade = this.listaPersonagens[posicao].raridade
                     this.funcoes = this.listaPersonagens[posicao].funcoes ? this.listaPersonagens[posicao].funcoes.slice() : []
@@ -221,9 +242,38 @@
                     if (dados != null) {
                         this.listaPersonagens = JSON.parse(dados).map(function (personagem) {
                             personagem.funcoes = personagem.funcoes || []
+                            personagem.icone = personagem.icone || ''
                             return personagem
                         })
                     }
+                },
+                montarRaridade: function (quantidade) {
+                    return '⭐'.repeat(quantidade)
+                },
+                carregarApi: async function () {
+                    this.carregandoApi = true
+                    try {
+                        let resposta = await fetch(endpoint)
+                        let dados = await resposta.json()
+                        dados.roleList.forEach(item => {
+                            let jaExiste = this.listaPersonagens.some(personagem => personagem.codigo == item.Id)
+                            if (!jaExiste) {
+                                let personagem = new Personagem(
+                                    item.Id,
+                                    item.Name,
+                                    item.RoleHeadIcon,
+                                    item.Element.Name,
+                                    this.montarRaridade(item.QualityId),
+                                    []
+                                )
+                                this.listaPersonagens.push(personagem)
+                            }
+                        })
+                        this.armazenar()
+                    } catch (erro) {
+                        alert('Erro ao carregar personagens da API: ' + erro)
+                    }
+                    this.carregandoApi = false
                 }
             },
             created() {

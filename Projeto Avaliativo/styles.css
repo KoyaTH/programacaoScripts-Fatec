@@ -1,0 +1,137 @@
+body {
+    min-height: 100vh;
+    color: #edf7ff;
+    background:
+        linear-gradient(rgba(94, 226, 255, .05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(94, 226, 255, .04) 1px, transparent 1px),
+        radial-gradient(circle at 25% 10%, rgba(94, 226, 255, .16), transparent 28rem),
+        radial-gradient(circle at 88% 20%, rgba(108, 140, 255, .12), transparent 24rem),
+        linear-gradient(135deg, #020508 0%, #050a10 45%, #081522 100%);
+    background-size: 34px 34px, 34px 34px, auto, auto, auto;
+}
+
+.black-shores-header {
+    border: 1px solid rgba(94, 226, 255, .22);
+    border-radius: .5rem;
+    background: linear-gradient(135deg, rgba(8, 18, 28, .96), rgba(10, 35, 49, .72));
+    box-shadow: 0 0 40px rgba(94, 226, 255, .12);
+}
+
+.black-shores-title {
+    color: #5ee2ff;
+    letter-spacing: 0;
+}
+
+.black-shores-subtitle {
+    color: #9eb7c9;
+}
+
+.black-shores-panel {
+    border: 1px solid rgba(94, 226, 255, .22);
+    border-radius: .5rem;
+    background: rgba(8, 18, 28, .88);
+    box-shadow: 0 18px 46px rgba(0, 0, 0, .34);
+}
+
+.black-shores-panel h1 {
+    color: #5ee2ff;
+    font-size: 1.45rem;
+    margin-bottom: 1rem;
+}
+
+label {
+    color: #b9d9e8;
+    font-weight: 600;
+}
+
+.form-control {
+    border-color: rgba(94, 226, 255, .26);
+    background-color: rgba(2, 8, 14, .8);
+    color: #f4fbff;
+}
+
+.form-control:focus {
+    border-color: #5ee2ff;
+    box-shadow: 0 0 0 .2rem rgba(94, 226, 255, .16);
+}
+
+.roles-box {
+    border-color: rgba(94, 226, 255, .26) !important;
+    background: rgba(11, 28, 42, .74);
+}
+
+.btn-outline-info {
+    color: #bff5ff;
+    border-color: rgba(94, 226, 255, .42);
+}
+
+.btn-outline-info:hover,
+.btn-check:checked+.btn-outline-info {
+    color: #f4fbff;
+    border-color: #5ee2ff;
+    background-color: rgba(94, 226, 255, .22);
+}
+
+.btn-outline-primary {
+    color: #dce4ff;
+    border-color: rgba(108, 140, 255, .58);
+}
+
+.btn-outline-primary:hover,
+.btn-check:checked+.btn-outline-primary {
+    color: #ffffff;
+    border-color: #6c8cff;
+    background-color: rgba(108, 140, 255, .28);
+}
+
+.btn-primary,
+.btn-success {
+    border-color: rgba(94, 226, 255, .55);
+    background: linear-gradient(135deg, #166d86, #244a9b);
+    box-shadow: 0 0 18px rgba(94, 226, 255, .14);
+}
+
+.table {
+    color: #edf7ff;
+    background-color: transparent;
+    margin-bottom: 0;
+    font-size: .9rem;
+    table-layout: fixed;
+    width: 100%;
+}
+
+.table th,
+.table td {
+    color: #edf7ff;
+    border-color: rgba(94, 226, 255, .16);
+    background-color: transparent;
+    padding: .5rem .35rem;
+    overflow-wrap: anywhere;
+    vertical-align: middle;
+}
+
+.table-striped tbody tr:nth-of-type(odd) td {
+    background-color: rgba(94, 226, 255, .045);
+}
+
+.table thead th {
+    color: #d8c071;
+    background-color: rgba(1, 8, 14, .76);
+    font-size: .82rem;
+}
+
+.table .btn {
+    padding: .35rem .55rem;
+    font-size: .85rem;
+}
+
+.character-icon {
+    border: 1px solid rgba(94, 226, 255, .32);
+    border-radius: .35rem;
+    background: rgba(255, 255, 255, .04);
+}
+
+.badge.text-bg-info {
+    color: #071016 !important;
+    background-color: #5ee2ff !important;
+}
