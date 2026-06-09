@@ -13,124 +13,273 @@
 
 <body>
     <div id="app" class="container py-4">
+        <div class="row g-4 mb-4 text-center"> 
+            <!-- Botões pra trocar de aba -->
+            <div class="col-4">
+                <button class="btn btn-dark mb-2" @click="trocarAba(1)">
+                    Cadastrar Personagem
+                </button>
+            </div>
+            <div class="col-4">
+                <button class="btn btn-dark mb-2" @click="trocarAba(2)">
+                    Personagens Cadastrados
+                </button>
+            </div>
+            <div class="col-4">
+                <button class="btn btn-dark mb-2" @click="trocarAba(3)">
+                    Gacha
+                </button>
+            </div>
+        </div>
         <div class="row g-4">
-            <div class="col-md-5">
+            <!-- Aba 1, a aba de cadastrar personagem -->
+            <div v-if="abativa == 1" class="col-md-12">
                 <div class="black-shores-panel p-3">
-                <h1>Cadastro de Personagem</h1>
-                <form action="#" method="post" @submit.prevent="salvar()">
-                    <label for="codigo">Código:</label>
-                    <input type="number" class="form-control mb-2" v-model="codigo">
+                    <h1>Cadastro de Personagem</h1>
+                    <form action="#" method="post" @submit.prevent="salvar()">
+                        <label for="codigo">Código:</label>
+                        <input type="number" class="form-control mb-2" v-model="codigo">
 
-                    <label for="nome">Nome do Personagem:</label>
-                    <input type="text" class="form-control mb-2" v-model="nome">
+                        <label for="nome">Nome do Personagem:</label>
+                        <input type="text" class="form-control mb-2" v-model="nome">
 
-                    <label for="icone">Icone do Personagem (URL):</label>
-                    <input type="text" class="form-control mb-2" v-model="icone">
+                        <label for="icone">Icone do Personagem (URL):</label>
+                        <input type="text" class="form-control mb-2" v-model="icone">
 
-                    <label for="elemento">Elemento:</label>
-                    <select name="elemento" id="elemento" class="form-control mb-2" v-model="elemento">
-                        <option disabled value="">Selecione um Elemento</option>
-                        <option value="Spectro">Spectro</option>
-                        <option value="Havoc">Havoc</option>
-                        <option value="Aero">Aero</option>
-                        <option value="Electro">Electro</option>
-                        <option value="Fusion">Fusion</option>
-                        <option value="Glacio">Glacio</option>
-                    </select>
-                    <label for="raridade">Raridade:</label>
-                    <div class="mb-2">
-                        <input type="radio" class="btn-check" id="star4" name="raridade" value="⭐⭐⭐⭐" v-model="raridade">
-                        <label class="btn btn-outline-primary" for="star4">⭐⭐⭐⭐</label>
+                        <label for="elemento">Elemento:</label>
+                        <select name="elemento" id="elemento" class="form-control mb-2" v-model="elemento">
+                            <option disabled value="">Selecione um Elemento</option>
+                            <option v-for="elemento in elementos" :value="elemento.nome">{{ elemento.nome }}</option>
+                        </select>
+                        <!-- Selecionar um elemento, vai aparecer o icone dele aqui -->
+                        <div class="mb-2" v-if="obterElemento(elemento)">
+                            <img :src="obterElemento(elemento).icone" :alt="elemento" width="24" height="24">
+                            {{ elemento }}
+                        </div>
+                        
+                        <label for="tipoArma">Tipo de Arma:</label>
+                        <select name="tipoArma" id="tipoArma" class="form-control mb-2" v-model="tipoArma">
+                            <option disabled value="">Selecione um Tipo</option>
+                            <option v-for="tipoArma in tiposArmas" :value="tipoArma.nome">{{ tipoArma.nome }}</option>
+                        </select>
+                        <!-- Selecionar uma arma, vai aparecer o icone dele aqui -->
+                        <div class="mb-2" v-if="obterTipoArma(tipoArma)">
+                            <img :src="obterTipoArma(tipoArma).icone" :alt="tipoArma" width="24" height="24">
+                            {{ tipoArma }}
+                        </div>
 
-                        <input type="radio" class="btn-check" id="star5" name="raridade" value="⭐⭐⭐⭐⭐" v-model="raridade">
-                        <label class="btn btn-outline-primary" for="star5">⭐⭐⭐⭐⭐</label>
-                    </div>
-                    <label>Funções:</label>
-                    <div class="border rounded p-2 mb-2 overflow-auto roles-box" style="max-height: 220px;">
-                        <div class="row row-cols-3 g-2">
-                            <div class="col" v-for="funcao in funcoesCombate">
-                                <input type="checkbox" class="btn-check d-none" :id="'funcao-' + funcao.id" :value="funcao.id"
-                                    v-model="funcoes" autocomplete="off" @change="$event.target.blur()">
-                                <label
-                                    class="btn btn-sm btn-outline-info d-inline-flex align-items-center text-start w-100"
-                                    :for="'funcao-' + funcao.id">
-                                    <img :src="funcao.icone" :alt="funcao.nome" width="20" height="20"
-                                        class="me-2 flex-shrink-0">
-                                    {{ funcao.nome }}
-                                </label>
+                        <label for="raridade">Raridade:</label>
+                        <div class="mb-2">
+                            <input type="radio" class="btn-check" id="star4" name="raridade" value="⭐⭐⭐⭐"
+                                v-model="raridade">
+                            <label class="btn btn-outline-primary" for="star4">⭐⭐⭐⭐</label>
+
+                            <input type="radio" class="btn-check" id="star5" name="raridade" value="⭐⭐⭐⭐⭐"
+                                v-model="raridade">
+                            <label class="btn btn-outline-primary" for="star5">⭐⭐⭐⭐⭐</label>
+                        </div>
+
+                        <label>Funções:</label>
+                        <div class="border rounded p-2 mb-2 overflow-auto roles-box" style="max-height: 220px;">
+                            <div class="row row-cols-3 g-2">
+                                <!-- Vai aparecer todas as funções adicionadas no array funcoesCombate
+                                e o usuário pode selecionar quantas quiser
+                                e vai armazenar o id da função selecionada no array funcoes -->
+                                <div class="col" v-for="funcao in funcoesCombate">
+                                    <input type="checkbox" class="btn-check d-none" :id="'funcao-' + funcao.id"
+                                        :value="funcao.id" v-model="funcoes" autocomplete="off"
+                                        @change="$event.target.blur()">
+                                    <label
+                                        class="btn btn-sm btn-outline-info d-inline-flex align-items-center text-start w-100"
+                                        :for="'funcao-' + funcao.id">
+                                        <img :src="funcao.icone" :alt="funcao.nome" width="20" height="20"
+                                            class="me-2 flex-shrink-0">
+                                        {{ funcao.nome }}
+                                    </label>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="mb-2">
-                        <span class="badge text-bg-info">{{ funcoes.length }} função(ões) selecionada(s)</span>
-                    </div>
+                        <div class="mb-2">
+                            <p class="badge text-bg-info">{{ funcoes.length }} funções selecionada(s)</p>
+                        </div>
 
-                    <div v-if="verificar()">
-                        <button class="btn btn-primary">Salvar</button>
-                    </div>
-                    <div v-else="verificar()">
-                        <button class="btn btn-primary" disabled>Salvar</button>
-                    </div>
-                </form>
+                        <div v-if="verificar()">
+                            <button class="btn btn-primary">Cadastrar</button>
+                        </div>
+                        <div v-else="verificar()">
+                            <button class="btn btn-primary" disabled>Cadastrar</button>
+                        </div>
+                    </form>
                 </div>
             </div>
 
-            <div class="col-md-7">
+            <!-- Aba 2, aba com lista dos personagens -->
+            <div v-if="abativa == 2" class="col-md-12">
                 <div class="black-shores-panel p-3">
-                
                     <h1>Lista de Personagens</h1>
-                
-                <button class="btn btn-success mb-2" @click="carregarApi()" :disabled="carregandoApi">
-                    {{ carregandoApi ? 'Carregando...' : 'Carregar personagens da API' }}
-                </button>
 
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Código</th>
-                            <th>Icone</th>
-                            <th>Nome do Personagem</th>
-                            <th>Elemento</th>
-                            <th>Raridade</th>
-                            <th>Funções</th>
-                            <th>Alterar</th>
-                            <th>Excluir</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="(personagem, posicao) in listaPersonagens">
-                            <td>{{ personagem.codigo }}</td>
-                            <td>
-                                <img v-if="personagem.icone" class="character-icon" :src="personagem.icone"
-                                    :alt="personagem.nome" :title="personagem.nome" width="48" height="48">
-                            </td>
-                            <td>{{ personagem.nome }}</td>
-                            <td>{{ personagem.elemento }}</td>
-                            <td>{{ personagem.raridade }}</td>
-                            <td>
-                                <div class="row row-cols-3 g-1">
-                                    <div class="col" v-for="funcao in obterFuncoes(personagem.funcoes)">
-                                        <img :src="funcao.icone" :alt="funcao.nome" :title="funcao.nome" width="24"
-                                            height="24">
+                    <!-- botão da api para cadastrar os personagens via API
+                    se clicar no botão ele fica desativado e só volta quando
+                    terminar de carregar os personagens -->
+                    <button class="btn btn-success mb-2" @click="carregarApi()" :disabled="carregandoApi">
+                        {{ carregandoApi ? 'Carregando...' : 'Carregar personagens da API' }}
+                    </button>
+
+                    <div class="row g-2 mb-3">
+                        <!-- Filtros -->
+                        <div class="col-md-3">
+                            <input type="text" class="form-control" placeholder="Pesquisar por nome..."
+                                v-model="pesquisaNome">
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-control" v-model="filtroRaridade">
+                                <option value="">Todas as raridades</option>
+                                <option value="⭐⭐⭐⭐">⭐⭐⭐⭐</option>
+                                <option value="⭐⭐⭐⭐⭐">⭐⭐⭐⭐⭐</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-control" v-model="filtroElemento">
+                                <option value="">Todos os elementos</option>
+                                <option v-for="elemento in elementos" :value="elemento.nome">{{ elemento.nome }}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-control" v-model="filtroTipoArma">
+                                <option value="">Todos os tipos de arma</option>
+                                <option v-for="tipoArma in tiposArmas" :value="tipoArma.nome">{{ tipoArma.nome }}</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <button class="btn btn-secondary" @click="limparFiltros()">
+                                Limpar filtros
+                            </button>
+                        </div>
+                    </div>
+
+                    <table class="table table-striped">
+
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Icone</th>
+                                <th>Nome do Personagem</th>
+                                <th>Elemento</th>
+                                <th>Tipo de Arma</th>
+                                <th>Raridade</th>
+                                <th>Funções</th>
+                                <th>Alterar</th>
+                                <th>Excluir</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="personagem in personagensFiltrados">
+                                <td>{{ personagem.codigo }}</td>
+                                <td>
+                                    <img v-if="personagem.icone" class="character-icon" :src="personagem.icone"
+                                        :alt="personagem.nome" :title="personagem.nome" width="48" height="48">
+                                </td>
+                                <td>{{ personagem.nome }}</td>
+                                <td>
+                                    <img v-if="personagem.elementoIcone" :src="personagem.elementoIcone"
+                                        :alt="personagem.elemento" :title="personagem.elemento" width="22" height="22">
+                                    {{ personagem.elemento }}
+                                </td>
+                                <td>
+                                    <img v-if="personagem.tipoArmaIcone" :src="personagem.tipoArmaIcone"
+                                        :alt="personagem.tipoArma" :title="personagem.tipoArma" width="22" height="22">
+                                    {{ personagem.tipoArma }}
+                                </td>
+                                <td>{{ personagem.raridade }}</td>
+                                <td>
+                                    <div class="row row-cols-3 g-1">
+                                        <div class="col" v-for="funcao in obterFuncoes(personagem.funcoes)">
+                                            <img :src="funcao.icone" :alt="funcao.nome" :title="funcao.nome" width="24"
+                                                height="24">
+                                        </div>
                                     </div>
-                                </div>
-                            </td>
-                            <td><a href="#" class="btn btn-warning" @click="alterar(posicao)">Alterar</a></td>
-                            <td><a href="#" class="btn btn-danger" @click="excluir(posicao)">Excluir</a></td>
-                        </tr>
-                    </tbody>
-                </table>
+                                </td>
+                                <td><a href="#" class="btn btn-warning" @click="alterar(obterPosicaoPersonagem(personagem))">Alterar</a></td>
+                                <td><a href="#" class="btn btn-danger" @click="excluir(obterPosicaoPersonagem(personagem))">Excluir</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div v-if="abativa == 3" class="col-md-12">
+                <div class="black-shores-panel p-3 text-center">
+                    <h1>Gacha</h1>
+                    <img class="img-fluid mb-3"
+                        src="https://img.game8.co/4518062/184b00692ad4beaf5eda12a955b825f6.png/show"
+                        alt="Banner Wuthering Waves">
+                    <div class="mb-3">
+                        <!-- Se clicar no botão ele começa a roletar, e fica disponivel de volta quando termina -->
+                        <button class="btn btn-primary" @click="roletarGacha()" :disabled="gachaRolando">
+                            {{ gachaRolando ? 'Roletando...' : 'Roletar' }} 
+                        </button>
+                    </div>
+
+                    <!-- Mensagem que aparece se tentar roletar sem ter personagem cadastrado -->
+                    <div v-if="gachaMensagem" class="alert alert-warning">
+                        {{ gachaMensagem }}
+                    </div>
+
+                    <!-- Preview do personagem que fica trocando durante a roleta -->
+                    <div v-if="gachaPreview" class="text-center">
+                        <img v-if="gachaPreview.icone" class="character-icon mb-2" :src="gachaPreview.icone"
+                            :alt="gachaPreview.nome" :title="gachaPreview.nome" width="120" height="120">
+                        <h2>{{ gachaPreview.nome }}</h2>
+                    </div>
+
+                    <!-- Resultado final da roleta -->
+                    <div v-if="gachaResultado" class="table-responsive mt-3">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Icone</th>
+                                    <th>Nome do Personagem</th>
+                                    <th>Elemento</th>
+                                    <th>Tipo de Arma</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <img v-if="gachaResultado.icone" class="character-icon"
+                                            :src="gachaResultado.icone" :alt="gachaResultado.nome"
+                                            :title="gachaResultado.nome" width="64" height="64">
+                                    </td>
+                                    <td>{{ gachaResultado.nome }}</td>
+                                    <td>
+                                        <img v-if="gachaResultado.elementoIcone" :src="gachaResultado.elementoIcone"
+                                            :alt="gachaResultado.elemento" :title="gachaResultado.elemento" width="22"
+                                            height="22">
+                                        {{ gachaResultado.elemento }}
+                                    </td>
+                                    <td>
+                                        <img v-if="gachaResultado.tipoArmaIcone" :src="gachaResultado.tipoArmaIcone"
+                                            :alt="gachaResultado.tipoArma" :title="gachaResultado.tipoArma" width="22"
+                                            height="22">
+                                        {{ gachaResultado.tipoArma }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     <script type="text/javascript">
         class Personagem {
-            constructor(codigo, nome, icone, elemento, raridade, funcoes) {
+            constructor(codigo, nome, icone, elemento, elementoIcone, tipoArma, tipoArmaIcone, raridade, funcoes) {
                 this.codigo = codigo
                 this.nome = nome
                 this.icone = icone
                 this.elemento = elemento
+                this.elementoIcone = elementoIcone
+                this.tipoArma = tipoArma
+                this.tipoArmaIcone = tipoArmaIcone
                 this.raridade = raridade
                 this.funcoes = funcoes
             }
@@ -143,10 +292,47 @@
                 nome: '',
                 icone: '',
                 elemento: '',
+                tipoArma: '',
                 raridade: '',
                 funcoes: [],
+
                 posicao: -1,
                 carregandoApi: false,
+
+                
+                pesquisaNome: '',
+                filtroRaridade: '',
+                filtroElemento: '',
+                filtroTipoArma: '',
+
+                listaPersonagens: [], 
+                abativa: 1, 
+
+                
+                gachaRolando: false,
+                gachaPreview: null, 
+                gachaResultado: null, 
+                gachaMensagem: '', 
+                gachaIntervalo: null, 
+                gachaTimeoutFixar: null,
+                gachaTimeoutResultado: null, 
+
+                
+                elementos: [
+                    { nome: 'Spectro', icone: 'https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElement/T_IconElementLight2.webp' },
+                    { nome: 'Havoc', icone: 'https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElement/T_IconElementDark2.webp' },
+                    { nome: 'Aero', icone: 'https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElement/T_IconElementWind2.webp' },
+                    { nome: 'Electro', icone: 'https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElement/T_IconElementThunder2.webp' },
+                    { nome: 'Fusion', icone: 'https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElement/T_IconElementFire2.webp' },
+                    { nome: 'Glacio', icone: 'https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElement/T_IconElementIce2.webp' }
+                ],
+                tiposArmas: [
+                    { nome: 'Broadblade', icone: 'https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconNor/SP_IconNorSword.webp' },
+                    { nome: 'Sword', icone: 'https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconNor/SP_IconNorKnife.webp' },
+                    { nome: 'Pistols', icone: 'https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconNor/SP_IconNorGun.webp' },
+                    { nome: 'Gauntlets', icone: 'https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconNor/SP_IconNorFist.webp' },
+                    { nome: 'Rectifier', icone: 'https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconNor/SP_IconNorMagic.webp' }
+                ],
                 funcoesCombate: [
                     { id: 'aero-dmg-amplification', nome: 'Aero DMG Amplification', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Aero_DMG_Amplification.png' },
                     { id: 'aero-erosion', nome: 'Aero Erosion', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Aero_Erosion_(Role).png' },
@@ -186,98 +372,288 @@
                     { id: 'tune-strain-response', nome: 'Tune Strain Response', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Tune_Strain_Response.png' },
                     { id: 'vibration-strength-reduction', nome: 'Vibration Strength Reduction', icone: 'https://wutheringwaves.fandom.com/wiki/Special:Redirect/file/Icon_Vibration_Strength_Reduction.png' }
                 ],
-                listaPersonagens: []
+
+            },
+            computed: {
+                // Computed é tipo uma variável calculada automaticamente pelo Vue
+                // aqui ele recalcula a lista toda vez que muda a pesquisa ou algum filtro
+                personagensFiltrados: function () {
+                    let pesquisa = this.pesquisaNome.toLowerCase().trim() // Nome digitado pelo usuario, em minusculo e sem espaços sobrando
+                    
+                    // Vai filtrar a lista de personagens, ai vai verificar personagem por personagem para ver se ele 
+                    // bate com oq o usuario escreveu
+                    return this.listaPersonagens.filter(function (personagem) { 
+                        let nome = personagem.nome ? personagem.nome.toLowerCase() : '' // Nome do personagem, se tiver nome ele coloca em minusculo, se não tiver ele deixa vazio
+                        
+                        // Se a pesquisa estiver vazia, 
+                        // qualquer nome serve ou se tiver algo pesquisado, 
+                        // o nome precisa conter o texto digitado.
+                        let nomeConfere = pesquisa == '' || nome.includes(pesquisa) 
+                        let raridadeConfere = this.filtroRaridade == '' || personagem.raridade == this.filtroRaridade // Se o filtro de raridade estiver vazio ou a raridade do personagem for igual ao filtro de raridade, ai raridadeConfere é true, se não for, é false
+                        let elementoConfere = this.filtroElemento == '' || personagem.elemento == this.filtroElemento // Se o filtro de elemento estiver vazio ou o elemento do personagem for igual ao filtro de elemento, ai elementoConfere é true, se não for, é false
+                        let tipoArmaConfere = this.filtroTipoArma == '' || personagem.tipoArma == this.filtroTipoArma // Se o filtro de tipo de arma estiver vazio ou o tipo de arma do personagem for igual ao filtro de tipo de arma, ai tipoArmaConfere é true, se não for, é false
+
+                        // True = personagem passa em todos os filtros
+                        // False = personagem não aparece na tabela
+
+                        return nomeConfere && raridadeConfere && elementoConfere && tipoArmaConfere
+                    }, this)
+                }
             },
             methods: {
                 salvar: function () {
-                    let personagem = new Personagem(this.codigo, this.nome, this.icone, this.elemento, this.raridade, this.funcoes.slice())
+                    let elementoSelecionado = this.obterElemento(this.elemento)
+                    let armaSelecionada = this.obterTipoArma(this.tipoArma)
+
+
+                    let personagem = new Personagem(
+                        this.codigo,
+                        this.nome,
+                        this.icone,
+                        this.elemento,
+                        elementoSelecionado ? elementoSelecionado.icone : '',
+                        this.tipoArma,
+                        armaSelecionada ? armaSelecionada.icone : '',
+                        this.raridade,
+                        this.funcoes.slice() // slice faz uma copia do array, para não salvar a mesma referencia do formulario
+                    )
+
+                    // Se posicao for -1 quer dizer que é um cadastro novo
                     if (this.posicao == -1) {
                         this.listaPersonagens.push(personagem)
                     } else {
+                        // Se posicao não for -1, quer dizer que está editando um personagem existente
                         Vue.set(this.listaPersonagens, this.posicao, personagem)
+                        this.abativa = 2
                     }
+
+                    // Salva no localStorage e limpa o formulário
                     this.armazenar()
                     this.limpar()
                 },
                 verificar: function () {
-                    return this.codigo != '' && this.nome != '' && this.elemento != '' && this.raridade != '' && this.funcoes.length > 0
-                },
-                obterFuncoes: function (funcoes) {
-                    if (!funcoes) {
-                        return []
-                    }
-                    return this.funcoesCombate.filter(function (funcao) {
-                        return funcoes.includes(funcao.id) || funcoes.includes(funcao.nome)
-                    })
+                    // Só libera o botão salvar se todos os campos obrigatórios estiverem preenchidos
+                    return this.codigo != '' && this.nome != '' && this.elemento != '' && this.tipoArma != '' && this.raridade != '' && this.funcoes.length > 0
                 },
                 limpar: function () {
+                    // Volta todos os campos do formulário para vazio
+                    // e coloca posicao como -1 para o próximo salvar ser um cadastro novo
                     this.posicao = -1
                     this.codigo = ''
                     this.nome = ''
                     this.icone = ''
                     this.elemento = ''
+                    this.tipoArma = ''
                     this.raridade = ''
                     this.funcoes = []
                 },
+
+                // Editar
                 alterar: function (posicao) {
+                    // Salva a posição do personagem que vai ser editado
                     this.posicao = posicao
+
+                    // Copia os dados do personagem escolhido para o formulário
                     this.codigo = this.listaPersonagens[posicao].codigo
                     this.nome = this.listaPersonagens[posicao].nome
                     this.icone = this.listaPersonagens[posicao].icone || ''
                     this.elemento = this.listaPersonagens[posicao].elemento
+                    this.tipoArma = this.listaPersonagens[posicao].tipoArma
                     this.raridade = this.listaPersonagens[posicao].raridade
                     this.funcoes = this.listaPersonagens[posicao].funcoes ? this.listaPersonagens[posicao].funcoes.slice() : []
+
+                    // Muda para a aba de cadastro, onde o usuário consegue editar
+                    this.abativa = 1
                 },
+                obterPosicaoPersonagem: function (personagem) {
+                    // Como a tabela pode estar filtrada, essa função acha a posição real dele na lista completa
+                    return this.listaPersonagens.indexOf(personagem)
+                },
+
+                // Excluir
                 excluir: function (posicao) {
                     if (confirm('Tem certeza que deseja excluir?')) {
+                        // Remove 1 personagem da lista, começando pela posição recebida
                         this.listaPersonagens.splice(posicao, 1)
                         this.armazenar()
                     }
                 },
+
+                // Carregar e armazenar dados
                 armazenar: function () {
+                    // Salva a lista no navegador em formato de texto JSON
                     localStorage.setItem('listaPersonagens', JSON.stringify(this.listaPersonagens))
                 },
                 carregar: function () {
+                    // Pega os personagens salvos no navegador quando abrir a página
                     let dados = localStorage.getItem('listaPersonagens')
                     if (dados != null) {
+                        // JSON.parse transforma o texto salvo de volta em array/objeto
                         this.listaPersonagens = JSON.parse(dados).map(function (personagem) {
+                            // Essas linhas evitam erro se algum personagem antigo não tiver esses campos
                             personagem.funcoes = personagem.funcoes || []
                             personagem.icone = personagem.icone || ''
+                            personagem.elementoIcone = personagem.elementoIcone || ''
+                            personagem.tipoArmaIcone = personagem.tipoArmaIcone || ''
                             return personagem
                         })
                     }
                 },
-                montarRaridade: function (quantidade) {
-                    return '⭐'.repeat(quantidade)
-                },
+
+                // Carregar a API
                 carregarApi: async function () {
+                    // Desativa o botão enquanto a API carrega
                     this.carregandoApi = true
                     try {
+                        // fetch busca os dados no endpoint da API
                         let resposta = await fetch(endpoint)
+                        // transforma a resposta da API em objeto JavaScript
                         let dados = await resposta.json()
+
+                        // roleList é a lista de personagens que vem da API
                         dados.roleList.forEach(item => {
+                            // Evita cadastrar o mesmo personagem duas vezes
                             let jaExiste = this.listaPersonagens.some(personagem => personagem.codigo == item.Id)
                             if (!jaExiste) {
+                                // Monta o personagem usando os campos que vêm da API
                                 let personagem = new Personagem(
                                     item.Id,
                                     item.Name,
                                     item.RoleHeadIcon,
                                     item.Element.Name,
+                                    this.montarIconeApi(item.Element.Icon),
+                                    item.WeaponType.Name,
+                                    this.montarIconeApi(item.WeaponType.Icon),
                                     this.montarRaridade(item.QualityId),
                                     []
                                 )
+                                // Adiciona o personagem da API na lista do projeto
                                 this.listaPersonagens.push(personagem)
                             }
                         })
+                        // Depois que carregar tudo, salva no localStorage
                         this.armazenar()
                     } catch (erro) {
+                        // Se der erro na internet/API, aparece esse alerta
                         alert('Erro ao carregar personagens da API: ' + erro)
                     }
+                    // Ativa o botão de novo quando terminar
                     this.carregandoApi = false
+                },
+                montarIconeApi: function (caminho) {
+                    // Se a API não mandar caminho de icone, retorna vazio
+                    if (!caminho) {
+                        return ''
+                    }
+                    // Se já vier uma URL completa, usa ela do jeito que veio
+                    if (caminho.startsWith('http')) {
+                        return caminho
+                    }
+                    // Se vier só uma parte do caminho, monta a URL completa do recurso
+                    return 'https://api.encore.moe/resource/Data' + caminho + '.webp'
+                },
+                montarRaridade: function (quantidade) {
+                    // Repete a estrela de acordo com a quantidade que veio da API
+                    return '⭐'.repeat(quantidade)
+                },
+
+                // Filtros
+                limparFiltros: function () {
+                    // Limpa todos os campos de filtro da aba de personagens cadastrados
+                    this.pesquisaNome = ''
+                    this.filtroRaridade = ''
+                    this.filtroElemento = ''
+                    this.filtroTipoArma = ''
+                },
+
+                // Gacha
+                obterPersonagemAleatorio: function () {
+                    // Sorteia uma posição aleatória dentro da lista de personagens
+                    let posicao = Math.floor(Math.random() * this.listaPersonagens.length)
+                    // Retorna o personagem que está nessa posição sorteada
+                    return this.listaPersonagens[posicao]
+                },
+                limparTimersGacha: function () {
+                    // Cancela os timers do gacha, para não ficar uma roleta antiga rodando por trás
+                    clearInterval(this.gachaIntervalo)
+                    clearTimeout(this.gachaTimeoutFixar)
+                    clearTimeout(this.gachaTimeoutResultado)
+
+                    // Depois de cancelar, zera as variáveis dos timers
+                    this.gachaIntervalo = null
+                    this.gachaTimeoutFixar = null
+                    this.gachaTimeoutResultado = null
+                },
+                roletarGacha: function () {
+                    // Não deixa roletar se não tiver personagem cadastrado
+                    if (this.listaPersonagens.length == 0) {
+                        this.gachaMensagem = 'Cadastre ou carregue personagens da API antes de roletar.'
+                        return
+                    }
+
+                    // Limpa qualquer timer anterior e prepara a tela para uma nova roleta
+                    this.limparTimersGacha()
+                    this.gachaRolando = true
+                    this.gachaResultado = null
+                    this.gachaMensagem = ''
+                    this.gachaPreview = this.obterPersonagemAleatorio()
+
+                    // A cada 0.5 segundo troca o personagem que aparece na tela
+                    this.gachaIntervalo = setInterval(function () {
+                        this.gachaPreview = this.obterPersonagemAleatorio()
+                    }.bind(this), 500)
+
+                    // Depois de 1.5 segundo para de trocar e fixa uma imagem/personagem
+                    this.gachaTimeoutFixar = setTimeout(function () {
+                        clearInterval(this.gachaIntervalo)
+                        this.gachaIntervalo = null
+                        this.gachaPreview = this.obterPersonagemAleatorio()
+                    }.bind(this), 1500)
+
+                    // Depois de 3.5 segundos mostra o resultado final na tabelinha
+                    this.gachaTimeoutResultado = setTimeout(function () {
+                        this.gachaResultado = this.gachaPreview
+                        this.gachaRolando = false
+                    }.bind(this), 3500)
+                },
+
+                // Funções auxiliares
+                obterFuncoes: function (funcoes) {
+                    // Se o personagem não tiver funções, retorna uma lista vazia para não dar erro no v-for
+                    if (!funcoes) {
+                        return []
+                    }
+                    // Pega os dados completos das funções que o personagem tem
+                    return this.funcoesCombate.filter(function (funcao) {
+                        return funcoes.includes(funcao.id) || funcoes.includes(funcao.nome)
+                    })
+                },
+                obterElemento: function (nome) {
+                    // Procura no array elementos o elemento que tem o mesmo nome selecionado
+                    return this.elementos.find(function (elemento) {
+                        return elemento.nome == nome
+                    })
+                },
+                obterTipoArma: function (nome) {
+                    // Procura no array tiposArmas a arma que tem o mesmo nome selecionado
+                    return this.tiposArmas.find(function (tipoArma) {
+                        return tipoArma.nome == nome
+                    })
+                },
+
+                // Troca de aba
+                trocarAba: function (aba) {
+                    // Muda qual aba aparece na tela
+                    this.abativa = aba
                 }
             },
             created() {
+                // Quando o Vue inicia, carrega os personagens salvos no localStorage
                 this.carregar()
+            },
+            beforeDestroy() {
+                // Antes do Vue ser destruído, cancela os timers do gacha
+                this.limparTimersGacha()
             }
         })
     </script>
